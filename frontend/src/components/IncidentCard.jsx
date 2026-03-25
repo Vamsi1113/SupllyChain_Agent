@@ -26,25 +26,25 @@ export default function IncidentCard({ onSubmit, loading }) {
   };
 
   return (
-    <div className="glass-card p-6 h-fit sticky top-6 border-t-2 border-t-brand-500/50">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-brand-500/20 flex items-center justify-center text-xl">
+    <div className="h-fit">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center text-2xl shadow-inner">
           🚨
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-100">Report Incident</h2>
-          <p className="text-sm text-slate-400">Trigger multi-agent response</p>
+          <h2 className="text-xl font-bold text-white tracking-tight">Report Incident</h2>
+          <div className="label-text mt-0.5 opacity-60">System Trigger</div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-            Target Part ID
+          <label className="label-text block mb-3 opacity-80">
+            Target Part Context
           </label>
           <input
             type="text"
-            className="input-field font-mono uppercase"
+            className="input-stitch font-mono uppercase text-brand"
             value={partId}
             onChange={(e) => setPartId(e.target.value)}
             placeholder="e.g. PART-001"
@@ -54,36 +54,36 @@ export default function IncidentCard({ onSubmit, loading }) {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-            Disruption Type
+          <label className="label-text block mb-3 opacity-80">
+            Disruption Category
           </label>
           <div className="relative">
             <select
-              className="select-field"
+              className="input-stitch appearance-none cursor-pointer"
               value={type}
               onChange={(e) => setType(e.target.value)}
               disabled={loading}
             >
               {DISRUPTION_TYPES.map(t => (
-                <option key={t.value} value={t.value} className="bg-surface-800">
+                <option key={t.value} value={t.value} className="bg-surface-lowest text-white">
                   {t.label}
                 </option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+            <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-brand/40">
               ▼
             </div>
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-            Quantity Required
+          <label className="label-text block mb-3 opacity-80">
+            Resource Requirement
           </label>
           <input
             type="number"
             min="1"
-            className="input-field"
+            className="input-stitch"
             value={qty}
             onChange={(e) => setQty(e.target.value)}
             required
@@ -94,17 +94,22 @@ export default function IncidentCard({ onSubmit, loading }) {
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary w-full mt-2 flex items-center justify-center gap-2"
+          className="btn-gradient w-full mt-4 flex items-center justify-center gap-3 group"
         >
           {loading ? (
             <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Initializing...
+              <span>Syncing...</span>
             </>
-          ) : '🚀 Auto-Resolve'}
+          ) : (
+            <>
+              <span className="group-hover:translate-x-1 transition-transform">🚀</span>
+              <span>Execute Orchestration</span>
+            </>
+          )}
         </button>
       </form>
     </div>

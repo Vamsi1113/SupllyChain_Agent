@@ -6,13 +6,15 @@
 
 @layer base {
   :root {
-    --scrollbar-track: #0d1425;
-    --scrollbar-thumb: #1f2d45;
+    --scrollbar-track: #060e20;
+    --scrollbar-thumb: #171f33;
+    --primary-gradient: linear-gradient(45deg, #c0c1ff 0%, #8083ff 100%);
   }
 
   * {
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    min-width: 0;
   }
 
   *::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -20,78 +22,83 @@
   *::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
 
   body {
-    @apply bg-surface-900 text-slate-100 font-sans;
+    @apply bg-surface-900 text-slate-100 font-sans antialiased overflow-x-hidden;
     background-image:
-      radial-gradient(ellipse at 10% 10%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 90% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+      radial-gradient(ellipse at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+      radial-gradient(ellipse at 100% 100%, rgba(128, 131, 255, 0.1) 0%, transparent 40%);
     background-attachment: fixed;
   }
 }
 
+@layer utilities {
+  .custom-scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .custom-scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @layer components {
-  .glass-card {
-    @apply bg-surface-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl;
+  /* Kinetic Layering: Borders are forbidden. Use background shifts and depth. */
+  .stitch-card {
+    @apply bg-surface-container rounded-2xl transition-all duration-300;
+    box-shadow: 0 10px 30px -10px rgba(6, 14, 32, 0.5);
   }
 
-  .glass-card-hover {
-    @apply glass-card transition-all duration-300 hover:border-brand-500/40 hover:bg-surface-700/80 hover:shadow-lg hover:shadow-brand-500/10;
+  .stitch-card-low {
+    @apply bg-surface-low rounded-2xl;
   }
 
-  .badge {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+  .stitch-card-high {
+    @apply bg-surface-high rounded-2xl shadow-xl;
+    box-shadow: 0 20px 40px -15px rgba(6, 14, 32, 0.6);
   }
 
-  .badge-success { @apply badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30; }
-  .badge-danger  { @apply badge bg-red-500/20 text-red-400 border border-red-500/30; }
-  .badge-warning { @apply badge bg-amber-500/20 text-amber-400 border border-amber-500/30; }
-  .badge-info    { @apply badge bg-brand-500/20 text-brand-400 border border-brand-500/30; }
-  .badge-purple  { @apply badge bg-purple-500/20 text-purple-400 border border-purple-500/30; }
-  .badge-muted   { @apply badge bg-slate-700/50 text-slate-400 border border-slate-600/30; }
-
-  .btn-primary {
-    @apply px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl
-           transition-all duration-200 hover:shadow-lg hover:shadow-brand-500/30 active:scale-95
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none;
+  /* Glass & Gradient Rule for CTAs */
+  .btn-gradient {
+    @apply px-6 py-3 text-white font-bold rounded-2xl transition-all duration-300 active:scale-95 disabled:opacity-50;
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 15px -5px rgba(128, 131, 255, 0.4);
+  }
+  .btn-gradient:hover {
+    @apply shadow-lg shadow-brand-container/30 brightness-110;
   }
 
-  .btn-success {
-    @apply px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl
-           transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/30 active:scale-95
-           disabled:opacity-50 disabled:cursor-not-allowed;
+  .btn-secondary {
+    @apply px-6 py-3 bg-surface-highest text-slate-200 font-semibold rounded-2xl transition-all duration-300 hover:bg-surface-bright border border-white/5;
   }
 
-  .btn-danger {
-    @apply px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl
-           transition-all duration-200 hover:shadow-lg hover:shadow-red-500/30 active:scale-95
-           disabled:opacity-50 disabled:cursor-not-allowed;
+  .input-stitch {
+    @apply w-full bg-surface-low border-none rounded-2xl px-5 py-4 text-slate-100
+           placeholder-slate-500 focus:outline-none transition-all duration-300;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .input-stitch:focus {
+    @apply bg-surface-container;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(192, 193, 255, 0.2);
   }
 
-  .btn-ghost {
-    @apply px-4 py-2 text-slate-400 hover:text-slate-200 hover:bg-surface-600/50 rounded-xl
-           transition-all duration-200 font-medium;
+  .badge-stitch {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white/5 text-slate-400;
   }
 
-  .input-field {
-    @apply w-full bg-surface-700/50 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-100
-           placeholder-slate-500 focus:outline-none focus:border-brand-500/70 focus:ring-2
-           focus:ring-brand-500/20 transition-all duration-200;
+  /* Orchestration Beam Utility */
+  .orchestration-beam {
+    @apply relative pl-6;
+  }
+  .orchestration-beam::before {
+    content: '';
+    @apply absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-brand via-brand/40 to-transparent;
   }
 
-  .select-field {
-    @apply input-field cursor-pointer appearance-none;
+  /* Typography Adjustments */
+  .display-text {
+    @apply text-4xl font-semibold tracking-tighter text-white;
+    letter-spacing: -0.04em;
   }
-
-  .react-step-thought { @apply text-brand-400; }
-  .react-step-action  { @apply text-purple-400; }
-  .react-step-obs     { @apply text-emerald-400; }
-
-  .node-active {
-    @apply border-brand-500 bg-brand-500/10 shadow-lg shadow-brand-500/20;
-  }
-  .node-done {
-    @apply border-emerald-500/50 bg-emerald-500/10;
-  }
-  .node-pending {
-    @apply border-slate-700/50 bg-surface-700/30;
+  .label-text {
+    @apply text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500;
   }
 }

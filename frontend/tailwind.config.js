@@ -8,29 +8,48 @@ export default {
     extend: {
       colors: {
         brand: {
+          light: '#e1e0ff',
+          DEFAULT: '#c0c1ff', // Primary
+          container: '#8083ff',
+          dark: '#494bd6',
           50: '#f0f9ff',
-          100: '#e0f2fe',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          900: '#0c4a6e',
+          100: '#e1e0ff',
+          400: '#c0c1ff',
+          500: '#6366f1', // Overridden primary color from metadata
+          600: '#494bd6',
+          700: '#2f2ebe',
+          900: '#0d0096',
         },
         surface: {
-          900: '#0a0f1e',
-          800: '#0d1425',
-          700: '#111827',
-          600: '#1a2236',
-          500: '#1f2d45',
-          400: '#2a3a54',
+          lowest: '#060e20',
+          low: '#131b2e',
+          DEFAULT: '#0b1326', // Surface Level 0
+          container: '#171f33',
+          high: '#222a3d',
+          highest: '#2d3449',
+          bright: '#31394d',
+          900: '#0b1326',
+          800: '#131b2e',
+          700: '#171f33',
+          600: '#222a3d',
+          500: '#2d3449',
+          400: '#31394d',
+        },
+        tertiary: {
+          DEFAULT: '#ffb783',
+          container: '#d97721',
         },
         accent: {
           purple: '#8b5cf6',
           cyan: '#06b6d4',
           green: '#10b981',
           amber: '#f59e0b',
-          red: '#ef4444',
+          red: '#ffb4ab', // From Stitch error color
         }
+      },
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '1.5rem', // Matches Stitch roundedness advice
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

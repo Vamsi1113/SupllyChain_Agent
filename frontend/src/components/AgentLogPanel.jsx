@@ -15,31 +15,34 @@ const STEP_ICONS = {
 function ReActStep({ step, index }) {
   const [open, setOpen] = useState(index === 0);
   return (
-    <div className="border border-slate-700/40 rounded-xl overflow-hidden mb-2 animate-fade-in">
+    <div className="mb-3 animate-fade-in group">
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-3 px-4 py-2.5 bg-surface-700/40 hover:bg-surface-600/40 transition-colors text-left"
+        className="w-full flex items-center gap-3 md:gap-4 px-4 md:px-5 py-3 md:py-4 bg-surface-lowest hover:bg-surface-low transition-all duration-300 rounded-2xl text-left shadow-inner"
       >
-        <span className="text-sm">{open ? '▾' : '▸'}</span>
-        <div className="flex gap-4 flex-1 text-xs font-mono">
-          <span className={STEP_COLORS.thought}>💭 Thought</span>
-          <span className={STEP_COLORS.action}>⚡ Action</span>
-          <span className={STEP_COLORS.observation}>👁️ Observation</span>
+        <span className="text-brand text-xs transition-transform duration-300" style={{ transform: open ? 'rotate(90deg)' : 'none' }}>▶</span>
+        <div className="flex gap-4 md:gap-6 flex-1">
+          <span className={`${STEP_COLORS.thought} label-text opacity-80`}>Thought</span>
+          <span className={`${STEP_COLORS.action} lg:inline-block label-text opacity-80 hidden`}>Action</span>
+          <span className={`${STEP_COLORS.observation} lg:inline-block label-text opacity-80 hidden`}>Obs</span>
         </div>
-        <span className="text-xs text-slate-500">Step {index + 1}</span>
+        <div className="label-text opacity-40">Step {index + 1}</div>
       </button>
       {open && (
-        <div className="px-4 py-3 space-y-3 bg-surface-800/30">
+        <div className="mt-2 px-6 py-5 space-y-5 bg-surface-low rounded-2xl border-t border-white/5 animate-slide-up">
           {[
-            { key: 'thought', label: 'Thought', value: step.thought },
-            { key: 'action', label: 'Action', value: step.action },
-            { key: 'observation', label: 'Observation', value: step.observation },
+            { key: 'thought', label: 'Internal Reasoning', value: step.thought },
+            { key: 'action', label: 'Tool Invocation', value: step.action },
+            { key: 'observation', label: 'System Response', value: step.observation },
           ].map(({ key, label, value }) => (
-            <div key={key}>
-              <div className={`text-xs font-semibold uppercase tracking-wider mb-1 ${STEP_COLORS[key]}`}>
-                {STEP_ICONS[key]} {label}
+            <div key={key} className="relative pl-6">
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-surface-highest rounded-full overflow-hidden">
+                <div className={`h-full w-full ${STEP_COLORS[key].replace('text-', 'bg-')} opacity-60`}></div>
               </div>
-              <div className="text-xs font-mono text-slate-300 bg-surface-900/60 rounded-lg px-3 py-2 whitespace-pre-wrap break-words">
+              <div className={`label-text mb-2 ${STEP_COLORS[key]}`}>
+                {label}
+              </div>
+              <div className="text-xs font-mono text-slate-300 leading-relaxed whitespace-pre-wrap">
                 {value || '—'}
               </div>
             </div>
@@ -54,64 +57,69 @@ function AgentSection({ log }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const agentColors = {
-    InventoryAgent: 'border-brand-500/50 text-brand-400',
-    RiskAgent: 'border-red-500/50 text-red-400',
-    SupplierAgent: 'border-purple-500/50 text-purple-400',
-    DecisionAgent: 'border-amber-500/50 text-amber-400',
-    ValidationAgent: 'border-emerald-500/50 text-emerald-400',
+    InventoryAgent: 'brand',
+    RiskAgent: 'accent-red',
+    SupplierAgent: 'purple-500',
+    DecisionAgent: 'amber-500',
+    ValidationAgent: 'emerald-500',
   };
-  const colorClass = agentColors[log.agent_name] || 'border-slate-600/50 text-slate-400';
+  const colorKey = agentColors[log.agent_name] || 'slate-500';
 
   return (
-    <div className={`glass-card border-l-2 ${colorClass.split(' ')[0]} mb-4 overflow-hidden`}>
-      <button
-        onClick={() => setCollapsed(c => !c)}
-        className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-surface-700/20 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <span className={`font-semibold text-sm ${colorClass.split(' ')[1]}`}>
-            {log.agent_name}
-          </span>
-          {log.error && (
-            <span className="badge-danger text-xs">Error</span>
-          )}
-          {log.duration_ms && (
-            <span className="text-xs text-slate-500">{Math.round(log.duration_ms)}ms</span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500">{log.steps?.length || 0} steps</span>
-          <span className="text-xs text-slate-500">{collapsed ? '▸' : '▾'}</span>
-        </div>
-      </button>
-
-      {!collapsed && (
-        <div className="px-5 pb-4">
-          {log.error && (
-            <div className="mb-3 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-xs font-mono">
-              Error: {log.error}
+    <div className="orchestration-beam mb-10 group">
+      <div className="stitch-card overflow-hidden">
+        <button
+          onClick={() => setCollapsed(c => !c)}
+          className="w-full flex items-center justify-between px-6 md:px-8 py-5 md:py-6 hover:bg-white/5 transition-all duration-500"
+        >
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className={`w-3 h-3 rounded-full bg-${colorKey} shadow-lg shadow-${colorKey}/40 animate-pulse`}></div>
+            <span className="text-base md:text-lg font-bold text-white tracking-tight">
+              {log.agent_name}
+            </span>
+            {log.error && (
+              <span className="badge-stitch text-red-400 bg-red-400/5 px-2 md:px-3 py-1">Failure</span>
+            )}
+          </div>
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className="text-right hidden sm:block">
+              <div className="label-text opacity-40">Performance</div>
+              <div className="text-xs font-mono text-slate-400">{Math.round(log.duration_ms || 0)}ms</div>
             </div>
-          )}
+            <span className="text-slate-500 transition-transform duration-500" style={{ transform: collapsed ? 'none' : 'rotate(180deg)' }}>▾</span>
+          </div>
+        </button>
 
-          {log.steps?.length > 0 && (
-            <div>
-              <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">ReAct Trace</div>
-              {log.steps.map((step, i) => (
-                <ReActStep key={i} step={step} index={i} />
-              ))}
-            </div>
-          )}
+        {!collapsed && (
+          <div className="px-8 pb-8 animate-slide-up">
+            {log.error && (
+              <div className="mb-6 p-5 bg-red-400/5 border border-red-400/10 rounded-2xl text-red-400 text-xs font-mono leading-relaxed">
+                {log.error}
+              </div>
+            )}
 
-          {log.output && (
-            <div className="mt-3">
-              <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">Output</div>
-              <pre className="text-xs font-mono text-emerald-300 bg-surface-900/60 rounded-xl px-4 py-3 overflow-x-auto">
-                {JSON.stringify(log.output, null, 2)}
-              </pre>
-            </div>
-          )}
-        </div>
-      )}
+            {log.steps?.length > 0 && (
+              <div className="mt-2">
+                <div className="label-text mb-6 opacity-40">Reasoning Trajectory</div>
+                <div className="space-y-4">
+                  {log.steps.map((step, i) => (
+                    <ReActStep key={i} step={step} index={i} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {log.output && (
+              <div className="mt-8">
+                <div className="label-text mb-4 opacity-40">Agent Consensus</div>
+                <pre className="text-xs font-mono text-emerald-400 bg-surface-lowest rounded-2xl px-6 py-5 overflow-x-auto shadow-inner border border-white/5">
+                  {JSON.stringify(log.output, null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -119,24 +127,33 @@ function AgentSection({ log }) {
 export default function AgentLogPanel({ agentLogs = [] }) {
   if (!agentLogs.length) {
     return (
-      <div className="glass-card p-8 text-center animate-fade-in">
-        <div className="text-4xl mb-3">🤖</div>
-        <div className="text-slate-400 text-sm">Agent logs will appear here once the run starts…</div>
+      <div className="stitch-card p-20 text-center animate-fade-in group">
+        <div className="w-20 h-20 bg-surface-low rounded-full mx-auto mb-8 flex items-center justify-center text-4xl opacity-20 group-hover:opacity-40 transition-opacity">
+          🤖
+        </div>
+        <div className="label-text opacity-40 tracking-[0.2em]">Monitoring Neutral Status</div>
       </div>
     );
   }
 
   return (
     <div className="animate-fade-in">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
-          Agent Reasoning Trace
-        </h3>
-        <span className="badge-info">{agentLogs.length} agents</span>
+      <div className="flex items-end justify-between mb-8 px-2">
+        <div>
+          <h3 className="text-2xl font-bold text-white tracking-tighter uppercase">
+            Intel Stream
+          </h3>
+          <div className="label-text mt-1 opacity-50">Cross-Agent Neural Logs</div>
+        </div>
+        <div className="badge-stitch border border-white/5 px-4 py-2">
+          {agentLogs.length} Synchronized Nodes
+        </div>
       </div>
-      {agentLogs.map((log, i) => (
-        <AgentSection key={i} log={log} />
-      ))}
+      <div className="mt-8">
+        {agentLogs.map((log, i) => (
+          <AgentSection key={i} log={log} />
+        ))}
+      </div>
     </div>
   );
 }
